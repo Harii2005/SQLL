@@ -1,5 +1,17 @@
+const express = require("express");
+// const uuid =require("uuid");
 const { faker } = require('@faker-js/faker');
 const mysql = require('mysql2');
+const app = express();
+const port = 8080;
+
+app.listen(port , ()=>{
+    console .log(`listening to port : ${port}`);
+});
+
+app.get("/" , (req , res) => {
+    res.send("server is working");
+});
 
 const connection = mysql.createConnection({
     host     : 'localhost',
@@ -24,16 +36,16 @@ for (let i=1 ; i<=100 ; i++){
 }
 
 
-try{
-    connection.query(q , [data] , (err , result) =>{
-        if(err) throw err;
-        console.log(result);
-    });
-}catch(err){
-    console.log("error");
-}
+// try{
+//     connection.query(q , [data] , (err , result) =>{
+//         if(err) throw err;
+//         console.log(result);
+//     });
+// }catch(err){
+//     console.log("error");
+// }
 
-connection.end();
+// connection.end();
 
 // try{
 //     connection.query("SHOW tables ", (err , result) => {
