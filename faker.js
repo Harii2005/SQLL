@@ -7,27 +7,33 @@ const connection = mysql.createConnection({
     database : 'delta_app2',
     password : 'MERNstack@2025'
 });
+let  getrandomuser = () => {
+    return [
+      faker.string.uuid(),
+      faker.internet.username(), // before version 9.1.0, use userName()
+      faker.internet.email(),
+      faker.internet.password(),
+    ];
+  };
+  
+let q = "insert into user(id , username, email, password) values ?";
+let data = [ ];
 
-data =[id , username , email , password];
-
-for(let i=0 ; i<=100 ; i++){
-
+for (let i=1 ; i<=100 ; i++){
+    data.push(getrandomuser());
 }
 
-let q = "insert into user(id, username, email, password) values ?";
-let users = [
-    ["1234" , "abcd" , "abcd@gmail.com" , "abcd"],
-    ["4321" , "dcba" , "dcba@gmail.com" , "dcba"]
-];
 
 try{
-    connection.query(q , [users] , (err , result) =>{
+    connection.query(q , [data] , (err , result) =>{
         if(err) throw err;
         console.log(result);
     });
 }catch(err){
     console.log("error");
 }
+
+connection.end();
 
 // try{
 //     connection.query("SHOW tables ", (err , result) => {
@@ -40,12 +46,7 @@ try{
 //     console.log(err);
 // }
 
-let  getrandomuser = () => {
-  return [
-    faker.string.uuid(),
-    faker.internet.username(), // before version 9.1.0, use userName()
-    faker.internet.email(),
-    faker.internet.password(),
-  ];
-};
+
+
+
 
