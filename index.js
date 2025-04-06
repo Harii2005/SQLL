@@ -72,7 +72,29 @@ app.get("/users/:id/edit" , (req,res) =>{
 
 //update route
 app.patch("/user/:id" , (req , res) => {
-    res.send("updated");
+    let {id} = req.params;
+    let {password : formpassword , username : formusername} = req.body
+    let  q = `select * from user where id ='${id}'`;
+    try{
+        connection.query(q , (err , result) =>{
+            if(err){
+                throw err;
+            }
+            let user = result[0];
+            if(user.password == formpassword){
+                let q2 = `UPDATE user SET username = '${formusername}' WHERE password = '${user.password}'`;
+                connection.query(q2 , (err , result)=>{
+                    if(err) throw error;
+                    res.redirect("/users");
+                });
+            }
+            else{
+                res.send("wrong password");
+            }
+        });
+    }catch(err){
+        res.send("there is some error in the database");
+    }
 });
 
 
