@@ -4,10 +4,12 @@ const mysql = require('mysql2');
 const app = express();
 const port = 8080;
 const path = require("path");
+const methodOverride = require("method-override");
 
 app.set("view engine" , "ejs");
 app.set("views" , path.join(__dirname , "/views"));
-
+app.use(methodOverride("_method"));
+app.use(express.urlencoded({extended:true}));
 
 const connection = mysql.createConnection({
     host     : 'localhost',
@@ -52,8 +54,25 @@ app.get("/users" , (req , res) => {
 });
 
 //EDIT route
-app.get("/users/:id" , (req,res) =>{
-    
+app.get("/users/:id/edit" , (req,res) =>{
+    let {id} = req.params;
+    let q = `select * from user where id = '${id}'`;
+    try{
+        connection.query(q , (err , result)=>{
+            if(err){
+                throw err;
+            }
+            let user = result[0];
+            res.render("edit.ejs" , {user});
+        });
+    }catch(err){
+        console.log("there is some error in Database");
+    }
+});
+
+//update route
+app.patch("/user/:id" , (req , res) => {
+    res.send("updated");
 });
 
 
