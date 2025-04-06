@@ -3,6 +3,11 @@ const express = require("express");
 const mysql = require('mysql2');
 const app = express();
 const port = 8080;
+const path = require("path");
+
+app.set("view engine" , "ejs");
+app.set("views" , path.join(__dirname , "/views"));
+
 
 const connection = mysql.createConnection({
     host     : 'localhost',
@@ -15,16 +20,44 @@ app.listen(port , ()=>{
     console .log(`listening to port : ${port}`);
 });
 
+
+//home route
 app.get("/" , (req , res) => {
-    res.send("server is working");
+    let q = "select count(*) from user";
+    try{
+        connection.query(q, (err, result) =>{
+            if(err) throw err;
+            let count = result[0]["count(*)"];
+            console.log(count);
+            res.render("home.ejs" , {count});
+        });
+    }catch (err){
+        console.log("there is some error in the daetbase");
+        res.send("error on database");
+    }
+});
+
+//show USERS route
+app.get("/users" , (req , res) => {
+    let q = "select * from user";
+    try{
+        connection.query(q, (err, users) =>{
+            if(err) throw err;
+            res.render("showusers.ejs",{users});
+        });
+    }catch (err){
+        console.log("there is some error in the daetbase");
+        res.send("error on database");
+    }
+});
+
+//EDIT route
+app.get("/users/:id" , (req,res) =>{
+    
 });
 
 
-
   
-
-
-
 // const { faker } = require('@faker-js/faker');
 // this the things required for faker.js
 // let  getrandomuser = () => {
