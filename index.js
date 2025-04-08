@@ -99,23 +99,15 @@ app.patch("/user/:id" , (req , res) => {
 
 
 //add route
-app.post("/user", (req, res) => {
-    const { id, username, email, password } = req.body;
-
-    if (!id || !username || !email || !password) {
-        return res.send("All fields are required.");
-    }
-
-    const q = `INSERT INTO user (id, username, email, password) VALUES (?, ?, ?, ?)`;
-    const values = [id, username, email, password];
-
-    connection.query(q, values, (err, result) => {
-        if (err) {
-            console.error("Insert error:", err);
-            return res.status(500).send("Failed to insert user.");
-        }
-
-        console.log("User added!");
+app.post("/user" , (req , res) => {
+   let {id , username , email , password} = req.body;
+    q = `insert into user(id , username , email , password) values ( ? , ? , ? , ?)`;
+    const values =[id , username , email , password];
+    connection.query(q , values , (err , result) => {
+        if(err){
+            return res.send("there is some error in DATBASE!!");
+        };
+        console.log("added successfully");
         res.redirect("/users");
     });
 });
