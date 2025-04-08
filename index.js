@@ -98,6 +98,29 @@ app.patch("/user/:id" , (req , res) => {
 });
 
 
+//add route
+app.post("/user", (req, res) => {
+    const { id, username, email, password } = req.body;
+
+    if (!id || !username || !email || !password) {
+        return res.send("All fields are required.");
+    }
+
+    const q = `INSERT INTO user (id, username, email, password) VALUES (?, ?, ?, ?)`;
+    const values = [id, username, email, password];
+
+    connection.query(q, values, (err, result) => {
+        if (err) {
+            console.error("Insert error:", err);
+            return res.status(500).send("Failed to insert user.");
+        }
+
+        console.log("User added!");
+        res.redirect("/users");
+    });
+});
+
+
   
 // const { faker } = require('@faker-js/faker');
 // this the things required for faker.js
