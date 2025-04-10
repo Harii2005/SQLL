@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h4>enter the email and password of user : <%= user.username%></h4>
+    <form method="POST" action="/users/<%= user.id %>?_method=DELETE">
+        <input type="text" placeholder="email" name="formemail">
+        <input type="password" placeholder="password" name="formpassword">
+        <button type="submit">Confirm Delete</button>
+    </form>
+</body>
+</html>

@@ -5,6 +5,8 @@ const app = express();
 const port = 8080;
 const path = require("path");
 const methodOverride = require("method-override");
+const { constants } = require("buffer");
+const { error } = require("console");
 
 app.set("view engine" , "ejs");
 app.set("views" , path.join(__dirname , "/views"));
@@ -56,7 +58,7 @@ app.get("/users" , (req , res) => {
 //EDIT route
 app.get("/users/:id/edit" , (req,res) =>{
     let {id} = req.params;
-    let q = `select * from user where id = '${id}'`;
+    let q = `select * from user where id = "${id}"`;
     try{
         connection.query(q , (err , result)=>{
             if(err){
@@ -73,7 +75,7 @@ app.get("/users/:id/edit" , (req,res) =>{
 //update route
 app.patch("/user/:id" , (req , res) => {
     let {id} = req.params;
-    let {password : formpassword , username : formusername} = req.body
+    let {password : formpassword , username : formusername} = req.body;
     let  q = `select * from user where id ='${id}'`;
     try{
         connection.query(q , (err , result) =>{
@@ -84,7 +86,7 @@ app.patch("/user/:id" , (req , res) => {
             if(user.password == formpassword){
                 let q2 = `UPDATE user SET username = '${formusername}' WHERE password = '${user.password}'`;
                 connection.query(q2 , (err , result)=>{
-                    if(err) throw error;
+                    if(err) throw err;
                     res.redirect("/users");
                 });
             }
@@ -112,7 +114,76 @@ app.post("/user" , (req , res) => {
     });
 });
 
+//delte email and password route
+app.get("/users/:id/delete", (req, res) => {
+    let {id} = req.params;
+    let q = `select * from user where id = '${id}'`;
+    try{
+        connection.query(q ,(err , result) => {
+            if(err) throw err;
+            let user = result[0];
+            console.log(result);
+            res.render("delete.ejs" , {user});
 
+        });
+    }catch(err){
+        console.log("ERROR IN DATABASE");
+    }
+});
+
+
+// //delete route
+// app.delete("/users/:id" , (req , res) => {
+//     let {id} = req.params;
+//     let { formpassword, formemail } = req.body;
+//     let q = `delete from user where id = '${id}'`;
+//     console.log(id);
+//     try{
+//         connection.query( q , (err , result) => {
+//             if(err) throw err;
+//             let user = result[0];
+//             console.log(result);
+//             if (user.email === formemail && user.password === formpassword) {
+//                 let q2 = `delete from user where id='${id}'`;
+//                 connection.query(q2 , (err , result) => {
+//                     if(err) throw err;
+//                     res.redirect("/users");
+//                 });
+//             }
+//         });
+//     }catch(err){
+//         res.send("there is some error in database");
+//     }
+// });
+
+//delete route
+app.delete("/users/:id", (req, res) => {
+    let { id } = req.params;
+    let { formpassword, formemail } = req.body;
+
+    let q = `SELECT * FROM user WHERE id = '${id}'`;
+    try {
+        connection.query(q, (err, result) => {
+            if (err) throw err;
+
+            let user = result[0];
+
+            console.log(user);
+
+            if (user.email === formemail && user.password === formpassword) {
+                let q2 = `DELETE FROM user WHERE id='${id}'`;
+                connection.query(q2, (err, result) => {
+                    if (err) throw err;
+                    res.redirect("/users");
+                });
+            } else {
+                res.send("Wrong credentials");
+            }
+        });
+    } catch (err) {
+        res.send("There is some error in database");
+    }
+});
   
 // const { faker } = require('@faker-js/faker');
 // this the things required for faker.js
