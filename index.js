@@ -185,6 +185,8 @@ app.delete("/users/:id", (req, res) => {
     }
 });
   
+
+//THIS CODE IS FOR ADDING FAKE DATA
 // const { faker } = require('@faker-js/faker');
 // this the things required for faker.js
 // let  getrandomuser = () => {
